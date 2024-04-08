@@ -1,0 +1,30 @@
+includes:
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+    bootstrapFiles:
+        - ./vendor/autoload.php
+
+    fileExtensions:
+        - php
+
+    level: max
+
+    paths:
+        - ./bin
+        - ./src
+
+    parallel:
+        maximumNumberOfProcesses: 2
+
+    tmpDir: ./var/phpstan_cache
+
+    reportUnmatchedIgnoredErrors: true
+
+    # FYI: https://phpstan.org/blog/bring-your-exceptions-under-control
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+
+    checkGenericClassInNonGenericObjectType: true

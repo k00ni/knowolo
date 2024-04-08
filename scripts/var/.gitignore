@@ -1,0 +1,3 @@
+phpstan_cache
+*.*
+!.gitignore

@@ -1,0 +1,37 @@
+{
+    "name": "knowolo/knowolo",
+    "description": "Compile (factual) knowledge to a class for easy usage.",
+    "type": "project",
+    "keywords": ["knowledge", "RDF", "ontology"],
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "bin": [
+        "bin/knowolo"
+    ],
+    "require": {
+        "php": ">=8.3",
+        "php-curl-class/php-curl-class": "^9.19",
+        "sweetrdf/in-memory-store-sqlite": "^1.1.0",
+        "sweetrdf/quick-rdf": "^2.0",
+        "sweetrdf/quick-rdf-io": "^1.0",
+        "symfony/cache": "^7",
+        "symfony/console": "^7"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.49.0",
+        "phpstan/phpstan": "^1",
+        "phpstan/phpstan-strict-rules": "^1.1",
+        "phpunit/phpunit": "^11"
+    },
+    "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
+        "psr-4": {
+            "Knowolo\\": "src/",
+            "Test\\": "test/",
+            "Tests\\": "tests/"
+        }
+    }
+}
