@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Knowolo;
 
+use Countable;
 use Iterator;
 
 /**
@@ -13,7 +14,7 @@ use Iterator;
  *
  * @api
  */
-interface KnowledgeEntityListInterface extends Iterator
+interface KnowledgeEntityListInterface extends Iterator, Countable
 {
     public function add(KnowledgeEntityInterface $entity): void;
 
@@ -64,7 +65,7 @@ interface KnowledgeEntityListInterface extends Iterator
     /**
      * Returns a list of related entities of higher order for given entity.
      */
-    public function getRelatedEntitiesOfHigherOrder(KnowledgeEntityInterface $term): KnowledgeEntityListInterface;
+    public function getRelatedEntitiesOfHigherOrder(KnowledgeEntityInterface $entity): KnowledgeEntityListInterface;
 
     /**
      * @param list<\Knowolo\KnowledgeEntityInterface> $entitiesOfHigherOrder
@@ -77,5 +78,5 @@ interface KnowledgeEntityListInterface extends Iterator
     /**
      * Returns a list of related entities of lower order for given entity.
      */
-    public function getRelatedEntitiesOfLowerOrder(KnowledgeEntityInterface $term): KnowledgeEntityListInterface;
+    public function getRelatedEntitiesOfLowerOrder(KnowledgeEntityInterface $entity): KnowledgeEntityListInterface;
 }

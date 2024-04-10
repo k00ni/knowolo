@@ -2,9 +2,8 @@
 
 namespace Tests;
 
-use Knowolo\Exception;
-use Knowolo\InternalImplementation\KnowledgeEntity;
-use Knowolo\InternalImplementation\KnowledgeEntityList;
+use Knowolo\DefaultImplementation\KnowledgeEntity;
+use Knowolo\DefaultImplementation\KnowledgeEntityList;
 use Knowolo\KnowledgeEntityListInterface;
 use Test\TestCase;
 

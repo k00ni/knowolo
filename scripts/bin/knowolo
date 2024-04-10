@@ -5,11 +5,17 @@ declare(strict_types=1);
 
 require __DIR__.'/../vendor/autoload.php';
 
-use Knowolo\Command\GenerateClassCommand;
+use Knowolo\Command\GenerateAsPlainPhpCodeCommand;
+use Knowolo\Command\GenerateAsSerializedPhpCodeCommand;
+use Knowolo\Generator\PhpCodeGenerator;
+use Knowolo\Generator\SerializedPhpCodeGenerator;
+use quickRdf\DataFactory;
 use Symfony\Component\Console\Application;
 
+$dataFactory = new DataFactory();
 $application = new Application();
 
-$application->add(new GenerateClassCommand());
+$application->add(new GenerateAsPlainPhpCodeCommand(new PhpCodeGenerator($dataFactory)));
+$application->add(new GenerateAsSerializedPhpCodeCommand(new SerializedPhpCodeGenerator($dataFactory)));
 
 $application->run();

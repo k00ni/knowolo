@@ -2,9 +2,9 @@
 
 namespace Tests;
 
-use Knowolo\InternalImplementation\KnowledgeEntity;
-use Knowolo\InternalImplementation\KnowledgeEntityList;
-use Knowolo\InternalImplementation\KnowledgeModule;
+use Knowolo\DefaultImplementation\KnowledgeEntity;
+use Knowolo\DefaultImplementation\KnowledgeEntityList;
+use Knowolo\DefaultImplementation\KnowledgeModule;
 use Test\TestCase;
 
 class KnowledgeModuleTest extends TestCase

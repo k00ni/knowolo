@@ -29,4 +29,13 @@ interface KnowledgeEntityInterface
      * @return non-empty-string
      */
     public function getId(): string;
+
+    /**
+     * Generates PHP code which represents a new statement, something like:
+     *
+     *     new KnowledgeEntity(['en' => 'too title'], 'http://id/1')
+     *
+     * @return non-empty-string
+     */
+    public function asPhpCodeNew(): string;
 }

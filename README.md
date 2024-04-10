@@ -13,3 +13,4 @@ MIT, see [LICENSE](./LICENSE).
 * `KnowledgeModuleInterface`
   * [ ] add `getSynonyms` - get synonyms for a given term
   * [ ] add `getPropertiesOfClass` - get properties for a given class
+* [ ] some configuration should be possible using a config file

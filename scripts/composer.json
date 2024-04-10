@@ -12,7 +12,7 @@
     "require": {
         "php": ">=8.3",
         "php-curl-class/php-curl-class": "^9.19",
-        "sweetrdf/in-memory-store-sqlite": "^1.1.0",
+        "sweetrdf/easyrdf": "^1.13.1",
         "sweetrdf/quick-rdf": "^2.0",
         "sweetrdf/quick-rdf-io": "^1.0",
         "symfony/cache": "^7",
