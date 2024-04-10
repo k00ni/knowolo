@@ -7,6 +7,8 @@ namespace Knowolo\Generator;
 use EasyRdf\Format;
 use EasyRdf\Graph;
 use EasyRdf\Literal;
+use EasyRdf\Resource;
+use Knowolo\Config;
 use Knowolo\Exception;
 use Knowolo\DefaultImplementation\KnowledgeEntity;
 use Knowolo\DefaultImplementation\KnowledgeEntityList;
@@ -39,7 +41,7 @@ abstract class AbstractGenerator
      *
      * @return non-empty-string
      */
-    abstract public function generateFileData(string $urlOrLocalPathToRdfFile): string;
+    abstract public function generateFileData(string $urlOrLocalPathToRdfFile, Config $config): string;
 
     /**
      * Builds an EasyRdf Graph instance which is used the query the data later on.
@@ -90,31 +92,42 @@ abstract class AbstractGenerator
     }
 
     /**
+     * @return array<non-empty-string,non-empty-string>
+     */
+    private function buildLanguageToNamesList(Resource $resource, Config $config): array
+    {
+        $languageToNamesList = [];
+        foreach ($config->getPreferedLanguages() as $lang) {
+            $value = $resource->label($lang, $this->labelProps)?->getValue() ?? null;
+
+            if (is_scalar($value) && false === isEmpty($value)) {
+                /** @var non-empty-string */
+                $value = (string) $value;
+                $languageToNamesList[$lang] = $value;
+            }
+        }
+
+        return $languageToNamesList;
+    }
+
+    /**
      * Builds terms information.
      *
      * @throws \Knowolo\Exception
      */
-    protected function buildTerms(Graph $graph): KnowledgeEntityListInterface
+    protected function buildTerms(Graph $graph, Config $config): KnowledgeEntityListInterface
     {
         $knowledgeEntityList = new KnowledgeEntityList();
 
         foreach ($graph->allOfType('skos:Concept') as $resource) {
-            $entity = new KnowledgeEntity(
-                [
-                    'de' => $resource->label('de', $this->labelProps)?->getValue() ?? null,
-                    'en' => $resource->label('en', $this->labelProps)?->getValue() ?? null,
-                ],
-                $resource->getUri(),
-            );
+            $langToNames = $this->buildLanguageToNamesList($resource, $config);
+            $entity = new KnowledgeEntity($langToNames, $resource->getUri());
             $knowledgeEntityList->add($entity);
 
             // broader terms
             foreach ($resource->allResources('skos:broader') as $relatedEntity) {
                 $relatedEntity = new KnowledgeEntity(
-                    [
-                        'de' => $relatedEntity->label('de', $this->labelProps)?->getValue() ?? null,
-                        'en' => $relatedEntity->label('en', $this->labelProps)?->getValue() ?? null,
-                    ],
+                    $this->buildLanguageToNamesList($relatedEntity, $config),
                     $relatedEntity->getUri(),
                 );
                 $knowledgeEntityList->addRelatedEntitiesOfHigherOrder($entity, [$relatedEntity]);
@@ -123,10 +136,7 @@ abstract class AbstractGenerator
             // narrower terms
             foreach ($resource->allResources('skos:narrower') as $relatedEntity) {
                 $relatedEntity = new KnowledgeEntity(
-                    [
-                        'de' => $relatedEntity->label('de', $this->labelProps)?->getValue() ?? null,
-                        'en' => $relatedEntity->label('en', $this->labelProps)?->getValue() ?? null,
-                    ],
+                    $this->buildLanguageToNamesList($relatedEntity, $config),
                     $relatedEntity->getUri(),
                 );
                 $knowledgeEntityList->addRelatedEntitiesOfLowerOrder($entity, [$relatedEntity]);

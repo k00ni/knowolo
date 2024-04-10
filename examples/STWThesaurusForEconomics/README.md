@@ -12,14 +12,37 @@ Source: https://en.wikipedia.org/wiki/Thesaurus_(information_retrieval)
 
 ## Generated knowledge module
 
-- reference to file
-- short summary
-- code examples how to use it
+Generated PHP file with knowledge module: [STWThesaurusForEconomics.php](./STWThesaurusForEconomics.php)
+
+`STWThesaurusForEconomics.php` contains a ready to use instance of [KnowledgeModuleInterface.php](./../../scripts/src/KnowledgeModuleInterface.php).
+This instance represents a huge chunk of the **STW Thesaurus for Economics**.
+You can use various functions to access the content of the thesaurus without the need to know what RDF, Turtle, triples etc. are.
+Our API is very simple and easy to use without prior knowledge: [KnowledgeModuleInterface.php](./../../scripts/src/KnowledgeModuleInterface.php)
+
+**Example code:**
+
+```php
+// Load a PHP class instance, which is ready to use!
+// see demo.php for further information
+$module = require __DIR__.'/STWThesaurusForEconomics.php';
+
+// count amount of terms stored
+echo PHP_EOL.'Knowledge module contains '.count($module->getTerms()).' terms';
+
+// get a list of narrower terms for a given term
+echo PHP_EOL.'Agricultural policy (narrower terms):';
+foreach ($module->getNarrowerTerms('Agricultural policy', 'en') as $term) {
+    echo PHP_EOL.' - '.$term->getName('en');
+}
+```
 
 ## Class generation
 
-Use the following command to generate the class:
+Use the following command to generate this class:
 
 ```bash
-php scripts/bin/knowolo know:generate-as-plain-php ./examples/STWThesaurusForEconomics/stw.ttl > ./examples/STWThesaurusForEconomics/STWThesaurusForEconomics.php
+php scripts/bin/knowolo know:generate-serialized-php-code \
+    examples/STWThesaurusForEconomics/stw.ttl \
+    examples/STWThesaurusForEconomics/knowolo.json \
+    > examples/STWThesaurusForEconomics/STWThesaurusForEconomics.php
 ```

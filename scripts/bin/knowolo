@@ -5,8 +5,8 @@ declare(strict_types=1);
 
 require __DIR__.'/../vendor/autoload.php';
 
-use Knowolo\Command\GenerateAsPlainPhpCodeCommand;
-use Knowolo\Command\GenerateAsSerializedPhpCodeCommand;
+use Knowolo\Command\GeneratePlainPhpCodeCommand;
+use Knowolo\Command\GenerateSerializedPhpCodeCommand;
 use Knowolo\Generator\PhpCodeGenerator;
 use Knowolo\Generator\SerializedPhpCodeGenerator;
 use quickRdf\DataFactory;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Application;
 $dataFactory = new DataFactory();
 $application = new Application();
 
-$application->add(new GenerateAsPlainPhpCodeCommand(new PhpCodeGenerator($dataFactory)));
-$application->add(new GenerateAsSerializedPhpCodeCommand(new SerializedPhpCodeGenerator($dataFactory)));
+$application->add(new GeneratePlainPhpCodeCommand(new PhpCodeGenerator($dataFactory)));
+$application->add(new GenerateSerializedPhpCodeCommand(new SerializedPhpCodeGenerator($dataFactory)));
 
 $application->run();

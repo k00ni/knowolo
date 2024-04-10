@@ -15,10 +15,16 @@ use Symfony\Contracts\Cache\ItemInterface;
  * @api
  * @see https://stackoverflow.com/questions/718986/checking-if-the-string-is-empty
  */
-function isEmpty(string|null $input): bool
+function isEmpty(bool|float|int|string|null $input): bool
 {
     if (null === $input) {
         return true;
+    } elseif (is_int($input)) {
+        return false;
+    } elseif (is_float($input)) {
+        return false;
+    } elseif (is_bool($input)) {
+        return false;
     } else { // its a string
         $input = trim($input);
         $input = (string) preg_replace('/\s/', '', $input);

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Knowolo\Generator;
 
 use EasyRdf\Format;
-use Knowolo\DefaultImplementation\KnowledgeModule;
+use Knowolo\Config;
+use Knowolo\DefaultImplementation\KnowledgeEntityList;
 use Knowolo\KnowledgeEntityListInterface;
 
 /**
@@ -20,23 +21,28 @@ class SerializedPhpCodeGenerator extends AbstractGenerator
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \quickRdfIo\RdfIoException
      */
-    public function generateFileData(string $urlOrLocalPathToRdfFile): string
+    public function generateFileData(string $urlOrLocalPathToRdfFile, Config $config): string
     {
         $iterator = $this->getIteratorForRdfFile($urlOrLocalPathToRdfFile);
 
         $graph = $this->buildGraph($iterator);
 
-        $termsInformation = $this->buildTerms($graph);
+        $termsInformation = $config->getIncludeTermInformation()
+            ? $this->buildTerms($graph, $config)
+            : new KnowledgeEntityList();
 
-        return $this->generateSerializedPhpCode($termsInformation);
+        return $this->generateSerializedPhpCode($termsInformation, $config);
     }
 
     /**
      * @return non-empty-string
      */
-    private function generateSerializedPhpCode(KnowledgeEntityListInterface $termsInformation): string
-    {
-        $knowledgeModule = new KnowledgeModule($termsInformation, null);
+    private function generateSerializedPhpCode(
+        KnowledgeEntityListInterface $termsInformation,
+        Config $config
+    ): string {
+        $moduleClassPath = $config->getPhpModuleClasspath();
+        $knowledgeModule = new $moduleClassPath($termsInformation, null);
 
         /** @var non-empty-string */
         $str = '<?php';

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Knowolo\Generator;
 
 use EasyRdf\Format;
+use Knowolo\Config;
 use Knowolo\KnowledgeEntityListInterface;
 
 /**
@@ -21,22 +22,26 @@ class PhpCodeGenerator extends AbstractGenerator
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \quickRdfIo\RdfIoException
      */
-    public function generateFileData(string $urlOrLocalPathToRdfFile): string
+    public function generateFileData(string $urlOrLocalPathToRdfFile, Config $config): string
     {
+        // TODO implement $config
+
         $iterator = $this->getIteratorForRdfFile($urlOrLocalPathToRdfFile);
 
         $graph = $this->buildGraph($iterator);
 
-        $termsInformation = $this->buildTerms($graph);
+        $termsInformation = $this->buildTerms($graph, $config);
 
-        return $this->generatePhpCode($termsInformation);
+        return $this->generatePhpCode($termsInformation, $config);
     }
 
     /**
      * @return non-empty-string
      */
-    private function generatePhpCode(KnowledgeEntityListInterface $termsInformation): string
-    {
+    private function generatePhpCode(
+        KnowledgeEntityListInterface $termsInformation,
+        Config $config
+    ): string {
         /** @var array<non-negative-integer,non-empty-string> */
         $entityRegister = [];
 
@@ -44,14 +49,12 @@ class PhpCodeGenerator extends AbstractGenerator
         $str .= PHP_EOL;
         $str .= PHP_EOL.'declare(strict_types=1);';
         $str .= PHP_EOL;
-        $str .= PHP_EOL.'namespace Examples;';
-        $str .= PHP_EOL;
-        $str .= PHP_EOL.'use \\Knowolo\\DefaultImplementation\\KnowledgeModule;';
-        $str .= PHP_EOL;
-        $str .= PHP_EOL.'class STWThesaurusForEconomics extends KnowledgeModule';
+        $str .= PHP_EOL.'class STWThesaurusForEconomics extends '.$config->getPhpModuleClasspath();
         $str .= PHP_EOL.'{';
-        $str .= PHP_EOL.'    public function init(): void';
+        $str .= PHP_EOL.'    public function __construct(): void';
         $str .= PHP_EOL.'    {';
+        $str .= PHP_EOL.'        parent::__construct();';
+        $str .= PHP_EOL;
 
         // add terms
         foreach ($termsInformation->asArray() as $index => $entity) {

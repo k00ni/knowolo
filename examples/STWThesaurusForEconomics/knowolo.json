@@ -2,8 +2,5 @@
     "include-term-information": true,
     "include-class-information": true,
     "prefered-languages": ["de", "en"],
-    "PHP-module-name": "STWThesaurusForEconomics",
-    "PHP-module-class": "\\Knowolo\\DefaultImplementation\\KnowledgeModule",
-    "PHP-namespace": "\\Knowolo\\Example",
-    "shorten-entity-uris": false
+    "php-module-classpath": "\\Knowolo\\DefaultImplementation\\KnowledgeModule"
 }
