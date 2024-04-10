@@ -12,7 +12,7 @@ use function Knowolo\isEmpty;
 class KnowledgeEntity implements KnowledgeEntityInterface
 {
     /**
-     * @var array<string|null,non-empty-string>
+     * @var array<string,non-empty-string>
      */
     private array $namePerLanguage = [];
 
@@ -22,7 +22,7 @@ class KnowledgeEntity implements KnowledgeEntityInterface
     private string $id;
 
     /**
-     * @param array<string|null,non-empty-string> $namePerLanguage Structure looks like: ['en' => 'name', ...]
+     * @param array<string,non-empty-string> $namePerLanguage Structure looks like: ['en' => 'name', ...]
      * @param non-empty-string $id
      *
      * @throws \Knowolo\Exception if $id is empty
@@ -32,9 +32,13 @@ class KnowledgeEntity implements KnowledgeEntityInterface
         if (isEmpty($id)) {
             throw new Exception('ID can not be empty.');
         }
-
         $this->id = $id;
 
+        if (0 == count($namePerLanguage)) {
+            throw new Exception('namePerLanguage has no elements');
+        } elseif (1 == count($namePerLanguage) && isEmpty(array_values($namePerLanguage)[0])) {
+            throw new Exception('namePerLanguage has one element, which is empty');
+        }
         $this->namePerLanguage = $namePerLanguage;
     }
 

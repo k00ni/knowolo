@@ -35,7 +35,7 @@ class GenerateSerializedPhpCodeCommand extends Command
     {
         $this
             // the command description shown when running "php bin/console list"
-            ->setDescription('Generates a class for a given ontology (default).')
+            ->setDescription('Generates a class for a given ontology')
 
             // arguments
             ->addArgument(

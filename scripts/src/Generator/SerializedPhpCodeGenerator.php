@@ -27,11 +27,17 @@ class SerializedPhpCodeGenerator extends AbstractGenerator
 
         $graph = $this->buildGraph($iterator);
 
+        // terms information
         $termsInformation = $config->getIncludeTermInformation()
-            ? $this->buildTerms($graph, $config)
+            ? $this->buildTermInformation($graph, $config)
             : new KnowledgeEntityList();
 
-        return $this->generateSerializedPhpCode($termsInformation, $config);
+        // class information
+        $classInformation = $config->getIncludeClassInformation()
+            ? $this->buildClassInformation($graph, $config)
+            : new KnowledgeEntityList();
+
+        return $this->generateSerializedPhpCode($termsInformation, $classInformation, $config);
     }
 
     /**
@@ -39,10 +45,11 @@ class SerializedPhpCodeGenerator extends AbstractGenerator
      */
     private function generateSerializedPhpCode(
         KnowledgeEntityListInterface $termsInformation,
+        KnowledgeEntityListInterface $classInformation,
         Config $config
     ): string {
         $moduleClassPath = $config->getPhpModuleClasspath();
-        $knowledgeModule = new $moduleClassPath($termsInformation, null);
+        $knowledgeModule = new $moduleClassPath($termsInformation, $classInformation);
 
         /** @var non-empty-string */
         $str = '<?php';

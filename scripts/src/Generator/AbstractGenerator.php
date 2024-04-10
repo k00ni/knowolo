@@ -29,7 +29,14 @@ abstract class AbstractGenerator
     /**
      * @var array<non-empty-string>
      */
-    protected array $labelProps = ['dc:title', 'dc11:title', 'rdfs:label', 'foaf:name', 'skos:prefLabel'];
+    protected array $labelProps = [
+        'dc:title',
+        'dc11:title',
+        'rdfs:label',
+        'foaf:name',
+        'skos:prefLabel',
+        'skos:altLabel'
+    ];
 
     public function __construct(DataFactoryInterface $dataFactory)
     {
@@ -92,7 +99,7 @@ abstract class AbstractGenerator
     }
 
     /**
-     * @return array<non-empty-string,non-empty-string>
+     * @return array<string,non-empty-string>
      */
     private function buildLanguageToNamesList(Resource $resource, Config $config): array
     {
@@ -107,7 +114,49 @@ abstract class AbstractGenerator
             }
         }
 
+        if (0 == count($languageToNamesList)) {
+            $value = $resource->label(null, $this->labelProps)?->getValue() ?? null;
+            if (is_scalar($value) && false === isEmpty($value)) {
+                /** @var non-empty-string */
+                $value = (string) $value;
+                $languageToNamesList[''] = $value;
+            }
+        }
+
         return $languageToNamesList;
+    }
+
+    /**
+     * Builds class information.
+     *
+     * @throws \Knowolo\Exception
+     */
+    protected function buildClassInformation(Graph $graph, Config $config): KnowledgeEntityListInterface
+    {
+        $knowledgeEntityList = new KnowledgeEntityList();
+
+        foreach ($graph->allOfType('owl:Class') as $resource) {
+            $langToNames = $this->buildLanguageToNamesList($resource, $config);
+            if (0 == count($langToNames)) {
+                continue;
+            }
+
+            $entity = new KnowledgeEntity($langToNames, $resource->getUri());
+            $knowledgeEntityList->add($entity);
+
+            // super class
+            foreach ($resource->allResources('rdfs:subClassOf') as $relatedEntity) {
+                $langToNames = $this->buildLanguageToNamesList($relatedEntity, $config);
+                if (0 == count($langToNames)) {
+                    continue;
+                }
+
+                $relatedEntity = new KnowledgeEntity($langToNames, $relatedEntity->getUri());
+                $knowledgeEntityList->addRelatedEntitiesOfHigherOrder($entity, [$relatedEntity]);
+            }
+        }
+
+        return $knowledgeEntityList;
     }
 
     /**
@@ -115,30 +164,36 @@ abstract class AbstractGenerator
      *
      * @throws \Knowolo\Exception
      */
-    protected function buildTerms(Graph $graph, Config $config): KnowledgeEntityListInterface
+    protected function buildTermInformation(Graph $graph, Config $config): KnowledgeEntityListInterface
     {
         $knowledgeEntityList = new KnowledgeEntityList();
 
         foreach ($graph->allOfType('skos:Concept') as $resource) {
             $langToNames = $this->buildLanguageToNamesList($resource, $config);
+            if (0 == count($langToNames)) {
+                continue;
+            }
+
             $entity = new KnowledgeEntity($langToNames, $resource->getUri());
             $knowledgeEntityList->add($entity);
 
             // broader terms
             foreach ($resource->allResources('skos:broader') as $relatedEntity) {
-                $relatedEntity = new KnowledgeEntity(
-                    $this->buildLanguageToNamesList($relatedEntity, $config),
-                    $relatedEntity->getUri(),
-                );
+                $langToNames = $this->buildLanguageToNamesList($relatedEntity, $config);
+                if (0 == count($langToNames)) {
+                    continue;
+                }
+                $relatedEntity = new KnowledgeEntity($langToNames, $relatedEntity->getUri());
                 $knowledgeEntityList->addRelatedEntitiesOfHigherOrder($entity, [$relatedEntity]);
             }
 
             // narrower terms
             foreach ($resource->allResources('skos:narrower') as $relatedEntity) {
-                $relatedEntity = new KnowledgeEntity(
-                    $this->buildLanguageToNamesList($relatedEntity, $config),
-                    $relatedEntity->getUri(),
-                );
+                $langToNames = $this->buildLanguageToNamesList($relatedEntity, $config);
+                if (0 == count($langToNames)) {
+                    continue;
+                }
+                $relatedEntity = new KnowledgeEntity($langToNames, $relatedEntity->getUri());
                 $knowledgeEntityList->addRelatedEntitiesOfLowerOrder($entity, [$relatedEntity]);
             }
         }

@@ -1,4 +1,4 @@
-# Example STW Thesaurus for Economics (Standard-Thesaurus Wirtschaft)
+# STW Thesaurus for Economics (Standard-Thesaurus Wirtschaft)
 
 **Web page of the thesaurus:** https://zbw.eu/stw/version/latest/download/about.en.html
 
