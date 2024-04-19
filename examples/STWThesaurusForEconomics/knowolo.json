@@ -2,5 +2,8 @@
     "include-term-information": true,
     "include-class-information": true,
     "prefered-languages": ["de", "en"],
-    "php-module-classpath": "\\Knowolo\\DefaultImplementation\\KnowledgeModule"
+    "php-module-classpath": "\\Knowolo\\DefaultImplementation\\KnowledgeModule",
+    "custom-label-properties-for-classes": [],
+    "compress-class-ids": true,
+    "compress-term-ids": true
 }

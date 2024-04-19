@@ -29,7 +29,7 @@ abstract class AbstractGenerator
     /**
      * @var array<non-empty-string>
      */
-    protected array $labelProps = [
+    protected array $defaultLabelProps = [
         'dc:title',
         'dc11:title',
         'rdfs:label',
@@ -99,13 +99,49 @@ abstract class AbstractGenerator
     }
 
     /**
+     * @param non-empty-string $uri
+     *
+     * @return non-empty-string
+     */
+    private function buildClassId(string $uri, Config $config): string
+    {
+        if ($config->getCompressClassIds()) {
+            $shortId = hash('sha512', $uri);
+            $shortId = 'class/'.substr($shortId, 0, 8);
+            return $shortId;
+        } else {
+            return $uri;
+        }
+    }
+
+    /**
+     * @param non-empty-string $uri
+     *
+     * @return non-empty-string
+     */
+    private function buildTermId(string $uri, Config $config): string
+    {
+        if ($config->getCompressTermIds()) {
+            $shortId = hash('sha512', $uri);
+            $shortId = 'term/'.substr($shortId, 0, 8);
+            return $shortId;
+        } else {
+            return $uri;
+        }
+    }
+
+    /**
      * @return array<string,non-empty-string>
      */
     private function buildLanguageToNamesList(Resource $resource, Config $config): array
     {
+        $labelProps = 0 < count($config->getCustomLabelPropertiesForClasses())
+            ? $config->getCustomLabelPropertiesForClasses()
+            : $this->defaultLabelProps;
+
         $languageToNamesList = [];
         foreach ($config->getPreferedLanguages() as $lang) {
-            $value = $resource->label($lang, $this->labelProps)?->getValue() ?? null;
+            $value = $resource->label($lang, $labelProps)?->getValue() ?? null;
 
             if (is_scalar($value) && false === isEmpty($value)) {
                 /** @var non-empty-string */
@@ -115,7 +151,7 @@ abstract class AbstractGenerator
         }
 
         if (0 == count($languageToNamesList)) {
-            $value = $resource->label(null, $this->labelProps)?->getValue() ?? null;
+            $value = $resource->label(null, $labelProps)?->getValue() ?? null;
             if (is_scalar($value) && false === isEmpty($value)) {
                 /** @var non-empty-string */
                 $value = (string) $value;
@@ -141,7 +177,7 @@ abstract class AbstractGenerator
                 continue;
             }
 
-            $entity = new KnowledgeEntity($langToNames, $resource->getUri());
+            $entity = new KnowledgeEntity($langToNames, $this->buildClassId($resource->getUri(), $config));
             $knowledgeEntityList->add($entity);
 
             // super class
@@ -151,7 +187,7 @@ abstract class AbstractGenerator
                     continue;
                 }
 
-                $relatedEntity = new KnowledgeEntity($langToNames, $relatedEntity->getUri());
+                $relatedEntity = new KnowledgeEntity($langToNames, $this->buildClassId($relatedEntity->getUri(), $config));
                 $knowledgeEntityList->addRelatedEntitiesOfHigherOrder($entity, [$relatedEntity]);
             }
         }
@@ -174,7 +210,7 @@ abstract class AbstractGenerator
                 continue;
             }
 
-            $entity = new KnowledgeEntity($langToNames, $resource->getUri());
+            $entity = new KnowledgeEntity($langToNames, $this->buildTermId($resource->getUri(), $config));
             $knowledgeEntityList->add($entity);
 
             // broader terms
@@ -183,7 +219,7 @@ abstract class AbstractGenerator
                 if (0 == count($langToNames)) {
                     continue;
                 }
-                $relatedEntity = new KnowledgeEntity($langToNames, $relatedEntity->getUri());
+                $relatedEntity = new KnowledgeEntity($langToNames, $this->buildTermId($relatedEntity->getUri(), $config));
                 $knowledgeEntityList->addRelatedEntitiesOfHigherOrder($entity, [$relatedEntity]);
             }
 
@@ -193,7 +229,8 @@ abstract class AbstractGenerator
                 if (0 == count($langToNames)) {
                     continue;
                 }
-                $relatedEntity = new KnowledgeEntity($langToNames, $relatedEntity->getUri());
+
+                $relatedEntity = new KnowledgeEntity($langToNames, $this->buildTermId($relatedEntity->getUri(), $config));
                 $knowledgeEntityList->addRelatedEntitiesOfLowerOrder($entity, [$relatedEntity]);
             }
         }

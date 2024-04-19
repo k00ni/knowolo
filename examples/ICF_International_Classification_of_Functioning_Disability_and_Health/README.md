@@ -23,3 +23,14 @@ Definition is an adapted version of the one used in "What is an Ontology?" by Fa
 ### Second attempt (less theoretical, more common sense)
 
 In other words, an ontology is a clearly defined set of technical terms that are linked to each other (e.g. synonyms, broader and narrower terms) and for which further metadata is available (e.g. definitions, hierarchies). A kind of set of rules (logical theory: axioms, etc.) is used to classify these technical terms so that the modeled technical knowledge can be applied.
+
+## Class generation
+
+Use the following command to generate this class:
+
+```bash
+php scripts/bin/knowolo know:generate-serialized-php-code \
+    examples/ICF_International_Classification_of_Functioning_Disability_and_Health/ICF_1.0.2_2012-08-05.owl \
+    examples/ICF_International_Classification_of_Functioning_Disability_and_Health/knowolo.json \
+    > examples/ICF_International_Classification_of_Functioning_Disability_and_Health/ICF.php
+```

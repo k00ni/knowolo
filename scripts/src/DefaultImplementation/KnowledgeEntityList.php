@@ -15,6 +15,11 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
     private array $entities = [];
 
     /**
+     * @var non-negative-int
+     */
+    private int $entityCount = 0;
+
+    /**
      * @var array<non-empty-string,\Knowolo\KnowledgeEntityListInterface>
      */
     private array $entitiesOfHigherOrder = [];
@@ -41,6 +46,7 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
             // already in list, so ignore
         } else {
             $this->entities[] = $entity;
+            ++$this->entityCount;
         }
     }
 
@@ -54,9 +60,12 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
         }
     }
 
+    /**
+     * @return non-negative-int
+     */
     public function count(): int
     {
-        return count($this->entities);
+        return $this->entityCount;
     }
 
     public function rewind(): void
