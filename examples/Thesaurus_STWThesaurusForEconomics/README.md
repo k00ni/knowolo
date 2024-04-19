@@ -1,4 +1,4 @@
-# STW Thesaurus for Economics (Standard-Thesaurus Wirtschaft)
+# Thesaurus example (using STW Thesaurus for Economics (Standard-Thesaurus Wirtschaft))
 
 **Web page of the thesaurus:** https://zbw.eu/stw/version/latest/download/about.en.html
 
@@ -34,6 +34,20 @@ echo PHP_EOL.'Agricultural policy (narrower terms):';
 foreach ($module->getNarrowerTerms('Agricultural policy', 'en') as $term) {
     echo PHP_EOL.' - '.$term->getName('en');
 }
+```
+
+This code will output something like:
+
+```
+Knowledge module contains 7633 terms
+
+Agricultural policy (narrower terms):
+ - Green revolution
+ - Agricultural subsidy
+ - Agricultural policy
+ - Common market organization
+ - Agrarian reform
+ [...]
 ```
 
 ## Class generation

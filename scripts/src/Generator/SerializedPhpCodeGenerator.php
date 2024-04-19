@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Knowolo\Generator;
 
-use EasyRdf\Format;
 use Knowolo\Config;
 use Knowolo\DefaultImplementation\KnowledgeEntityList;
 use Knowolo\KnowledgeEntityListInterface;
