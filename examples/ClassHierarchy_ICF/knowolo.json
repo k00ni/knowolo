@@ -1,0 +1,11 @@
+{
+    "include-term-information": false,
+    "include-class-information": true,
+    "prefered-languages": [],
+    "php-module-classpath": "\\Knowolo\\DefaultImplementation\\KnowledgeModule",
+    "custom-label-properties-for-classes": ["skos:altLabel"],
+    "compress-class-ids": true,
+    "compress-term-ids": true,
+    "align-class-titles": true,
+    "sort-all-entities-by-title-asc-using-language": "en"
+}

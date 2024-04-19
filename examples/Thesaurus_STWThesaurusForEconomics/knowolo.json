@@ -5,5 +5,7 @@
     "php-module-classpath": "\\Knowolo\\DefaultImplementation\\KnowledgeModule",
     "custom-label-properties-for-classes": [],
     "compress-class-ids": true,
-    "compress-term-ids": true
+    "compress-term-ids": true,
+    "align-class-titles": false,
+    "sort-all-entities-by-title-asc-using-language": null
 }

@@ -29,8 +29,10 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
      */
     private array $entitiesOfLowerOrder = [];
 
+    /**
+     * @var non-negative-int
+     */
     private int $position = 0;
-    private bool $reverse = false;
 
     /**
      * @param list<\Knowolo\KnowledgeEntityInterface> $entities
@@ -70,7 +72,7 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
 
     public function rewind(): void
     {
-        $this->position = $this->reverse ? count($this->entities) - 1 : 0;
+        $this->position = 0;
     }
 
     public function current(): KnowledgeEntityInterface
@@ -85,7 +87,7 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
 
     public function next(): void
     {
-        $this->position = $this->position + ($this->reverse ? -1 : 1);
+        ++$this->position;
     }
 
     public function valid(): bool
@@ -109,12 +111,12 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
         return $result;
     }
 
-    public function asListOfNames(string|null $language = null): iterable
+    public function asListOfTitles(string|null $language = null): iterable
     {
         $result = [];
 
         foreach ($this->entities as $entity) {
-            $result[] = $entity->getName($language);
+            $result[] = $entity->getTitle($language);
         }
 
         return $result;
@@ -128,7 +130,7 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
     public function getEntityByName(string $name, string|null $language): KnowledgeEntityInterface|null
     {
         foreach ($this->entities as $entity) {
-            if ($entity->getName($language) == $name) {
+            if ($entity->getTitle($language) == $name) {
                 return $entity;
             }
         }
@@ -149,6 +151,14 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
         foreach ($entitiesOfHigherOrder as $entityOfHigherOrder) {
             $this->entitiesOfHigherOrder[$entity->getId()]->add($entityOfHigherOrder);
             $this->add($entityOfHigherOrder);
+
+            // add entities for lower order; this allows users to later ask for both ways:
+            // get entities of higher or lower order
+            $id = $entityOfHigherOrder->getId();
+            if (false === isset($this->entitiesOfLowerOrder[$id])) {
+                $this->entitiesOfLowerOrder[$id] = new self();
+            }
+            $this->entitiesOfLowerOrder[$id]->add($entity);
         }
     }
 
@@ -177,6 +187,14 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
         foreach ($entitiesOfLowerOrder as $entityOfLowerOrder) {
             $this->entitiesOfLowerOrder[$entity->getId()]->add($entityOfLowerOrder);
             $this->add($entityOfLowerOrder);
+
+            // add entities for higher order; this allows users to later ask for both ways:
+            // get entities of higher or lower order
+            $id = $entityOfLowerOrder->getId();
+            if (false === isset($this->entitiesOfHigherOrder[$id])) {
+                $this->entitiesOfHigherOrder[$id] = new self();
+            }
+            $this->entitiesOfHigherOrder[$id]->add($entity);
         }
     }
 
@@ -205,5 +223,22 @@ class KnowledgeEntityList implements KnowledgeEntityListInterface
         }
 
         return null;
+    }
+
+    public function sortByTitleAscending(string|null $language = null): void
+    {
+        // sort entities list itself
+        usort($this->entities, function ($a, $b) use ($language) {
+            return $a->getTitle($language) < $b->getTitle($language) ? -1 : 1;
+        });
+
+        // sort all sub lists in entitiesOfLowerOrder and ...
+        foreach (array_keys($this->entitiesOfLowerOrder) as $id) {
+            $this->entitiesOfLowerOrder[$id]->sortByTitleAscending($language);
+        }
+        // ... entitiesOfHigherOrder
+        foreach (array_keys($this->entitiesOfHigherOrder) as $id) {
+            $this->entitiesOfHigherOrder[$id]->sortByTitleAscending($language);
+        }
     }
 }

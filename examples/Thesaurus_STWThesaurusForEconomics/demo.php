@@ -19,18 +19,18 @@ echo PHP_EOL;
 // example for getBroaderTerms
 echo PHP_EOL.'Fischerei (broader terms):'; // Fischerei is the German term for fishery
 foreach ($module->getBroaderTerms('Fischerei', 'de') as $term) {
-    echo PHP_EOL.' - '.$term->getName('de');
+    echo PHP_EOL.' - '.$term->getTitle('de');
 }
 
 // example for getNarrowerTerms
 echo PHP_EOL;
 echo PHP_EOL.'Agricultural policy (narrower terms):';
 foreach ($module->getNarrowerTerms('Agricultural policy', 'en') as $term) {
-    echo PHP_EOL.' - '.$term->getName('en');
+    echo PHP_EOL.' - '.$term->getTitle('en');
 }
 echo PHP_EOL;
 // TODO why does list contain only German terms?!
-echo PHP_EOL.'or as a list of strings: '.implode(', ', $module->getNarrowerTerms('Agricultural policy', 'en')->asListOfNames());
+echo PHP_EOL.'or as a list of strings: '.implode(', ', $module->getNarrowerTerms('Agricultural policy', 'en')->asListOfTitles());
 
 // show amount of seconds this script required to run
 echo PHP_EOL;

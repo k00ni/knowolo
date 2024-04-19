@@ -9,6 +9,11 @@ namespace Knowolo;
  */
 readonly class Config
 {
+    /**
+     * If true, class titles are being changed so each word starts with an uppercase letter
+     * followed by lowercase letters.
+     */
+    private bool $alignClassTitles;
     private bool $compressClassIds;
     private bool $compressTermIds;
 
@@ -31,6 +36,11 @@ readonly class Config
     private string $phpModuleClasspath;
 
     /**
+     * @var string|null
+     */
+    private string|null $sortAllEntitiesByTitleAscUsingLanguage;
+
+    /**
      * @param string|null $json
      *
      * @throws \Knowolo\Exception if JSON parsing failed
@@ -46,6 +56,13 @@ readonly class Config
             if (0 < json_last_error()) {
                 throw new Exception('JSON parsing failed: '.json_last_error_msg());
             }
+        }
+
+        // align-class-titles
+        if (isset($configArr['align-class-titles']) && is_bool($configArr['align-class-titles'])) {
+            $this->alignClassTitles = $configArr['align-class-titles'];
+        } else {
+            $this->alignClassTitles = false;
         }
 
         // compress-class-ids
@@ -113,6 +130,42 @@ readonly class Config
         } else {
             $this->phpModuleClasspath = '\\Knowolo\\DefaultImplementation\\KnowledgeModule';
         }
+
+        // sort-all-entities-by-title-asc-using-language
+        if (
+            isset($configArr['sort-all-entities-by-title-asc-using-language'])
+            && (
+                is_string($configArr['sort-all-entities-by-title-asc-using-language'])
+                || null === $configArr['sort-all-entities-by-title-asc-using-language']
+            )
+        ) {
+            $this->sortAllEntitiesByTitleAscUsingLanguage = $configArr['sort-all-entities-by-title-asc-using-language'];
+        } else {
+            $this->sortAllEntitiesByTitleAscUsingLanguage = null;
+        }
+    }
+
+    public function getAlignClassTitles(): bool
+    {
+        return $this->alignClassTitles;
+    }
+
+    public function getCompressTermIds(): bool
+    {
+        return $this->compressTermIds;
+    }
+
+    public function getCompressClassIds(): bool
+    {
+        return $this->compressClassIds;
+    }
+
+    /**
+     * @return array<non-empty-string>
+     */
+    public function getCustomLabelPropertiesForClasses(): array
+    {
+        return $this->customLabelPropertiesForClasses;
     }
 
     public function getIncludeTermInformation(): bool
@@ -142,20 +195,10 @@ readonly class Config
     }
 
     /**
-     * @return array<non-empty-string>
+     * @return string|null
      */
-    public function getCustomLabelPropertiesForClasses(): array
+    public function getSortAllEntitiesByTitleAscUsingLanguage(): string|null
     {
-        return $this->customLabelPropertiesForClasses;
-    }
-
-    public function getCompressTermIds(): bool
-    {
-        return $this->compressTermIds;
-    }
-
-    public function getCompressClassIds(): bool
-    {
-        return $this->compressClassIds;
+        return $this->sortAllEntitiesByTitleAscUsingLanguage;
     }
 }

@@ -36,6 +36,9 @@ class SerializedPhpCodeGenerator extends AbstractGenerator
             ? $this->buildClassInformation($graph, $config)
             : new KnowledgeEntityList();
 
+        $termsInformation->sortByTitleAscending($config->getSortAllEntitiesByTitleAscUsingLanguage());
+        $classInformation->sortByTitleAscending($config->getSortAllEntitiesByTitleAscUsingLanguage());
+
         return $this->generateSerializedPhpCode($termsInformation, $classInformation, $config);
     }
 

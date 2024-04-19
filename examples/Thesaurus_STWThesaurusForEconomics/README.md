@@ -32,7 +32,7 @@ echo PHP_EOL.'Knowledge module contains '.count($module->getTerms()).' terms';
 // get a list of narrower terms for a given term
 echo PHP_EOL.'Agricultural policy (narrower terms):';
 foreach ($module->getNarrowerTerms('Agricultural policy', 'en') as $term) {
-    echo PHP_EOL.' - '.$term->getName('en');
+    echo PHP_EOL.' - '.$term->getTitle('en');
 }
 ```
 

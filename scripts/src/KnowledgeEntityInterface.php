@@ -19,7 +19,7 @@ interface KnowledgeEntityInterface
      *
      * @return non-empty-string
      */
-    public function getName(string|null $language = null): string;
+    public function getTitle(string|null $language = null): string;
 
     /**
      * Get the ID of the entity. For instance an URL, URI or IRI.

@@ -155,6 +155,13 @@ abstract class AbstractGenerator
             if (is_scalar($value) && false === isEmpty($value)) {
                 /** @var non-empty-string */
                 $value = (string) $value;
+
+                // align class title, if set to true in config
+                if ($config->getAlignClassTitles()) {
+                    $value = mb_strtolower($value);
+                    $value = ucfirst($value);
+                }
+
                 $languageToNamesList[''] = $value;
             }
         }

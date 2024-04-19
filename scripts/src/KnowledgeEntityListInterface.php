@@ -52,7 +52,7 @@ interface KnowledgeEntityListInterface extends Iterator, Countable
     /**
      * @return list<non-empty-string>
      */
-    public function asListOfNames(string|null $language = null): iterable;
+    public function asListOfTitles(string|null $language = null): iterable;
 
     /**
      * @param list<\Knowolo\KnowledgeEntityInterface> $entitiesOfHigherOrder
@@ -79,4 +79,11 @@ interface KnowledgeEntityListInterface extends Iterator, Countable
      * Returns a list of related entities of lower order for given entity.
      */
     public function getRelatedEntitiesOfLowerOrder(KnowledgeEntityInterface $entity): KnowledgeEntityListInterface;
+
+    /**
+     * Sorts all entities by title ascending.
+     *
+     * @param string|null $language Sort entities by their title in given language. If null, first matching language is used.
+     */
+    public function sortByTitleAscending(string|null $language = null): void;
 }

@@ -14,7 +14,7 @@ class KnowledgeEntity implements KnowledgeEntityInterface
     /**
      * @var array<string,non-empty-string>
      */
-    private array $namePerLanguage = [];
+    private array $titlePerLanguage = [];
 
     /**
      * @var non-empty-string
@@ -22,38 +22,38 @@ class KnowledgeEntity implements KnowledgeEntityInterface
     private string $id;
 
     /**
-     * @param array<string,non-empty-string> $namePerLanguage Structure looks like: ['en' => 'name', ...]
+     * @param array<string,non-empty-string> $titlePerLanguage Structure looks like: ['en' => 'name', ...]
      * @param non-empty-string $id
      *
      * @throws \Knowolo\Exception if $id is empty
      */
-    public function __construct(array $namePerLanguage, string $id)
+    public function __construct(array $titlePerLanguage, string $id)
     {
         if (isEmpty($id)) {
             throw new Exception('ID can not be empty.');
         }
         $this->id = $id;
 
-        if (0 == count($namePerLanguage)) {
-            throw new Exception('namePerLanguage has no elements');
-        } elseif (1 == count($namePerLanguage) && isEmpty(array_values($namePerLanguage)[0])) {
-            throw new Exception('namePerLanguage has one element, which is empty');
+        if (0 == count($titlePerLanguage)) {
+            throw new Exception('titlePerLanguage has no elements');
+        } elseif (1 == count($titlePerLanguage) && isEmpty(array_values($titlePerLanguage)[0])) {
+            throw new Exception('titlePerLanguage has one element, which is empty');
         }
-        $this->namePerLanguage = $namePerLanguage;
+        $this->titlePerLanguage = $titlePerLanguage;
     }
 
     /**
      * @throws \Knowolo\Exception if there are no names or no name for given language available.
      */
-    public function getName(string|null $language = null): string
+    public function getTitle(string|null $language = null): string
     {
-        if (isEmpty($language) && 0 < count($this->namePerLanguage)) {
-            return array_values($this->namePerLanguage)[0];
+        if (isEmpty($language) && 0 < count($this->titlePerLanguage)) {
+            return array_values($this->titlePerLanguage)[0];
         } elseif (
             false === isEmpty($language)
-            && true === isset($this->namePerLanguage[$language])
+            && true === isset($this->titlePerLanguage[$language])
         ) {
-            return $this->namePerLanguage[$language];
+            return $this->titlePerLanguage[$language];
         } else {
             throw new Exception('No names available or no name for given language.');
         }
@@ -66,11 +66,11 @@ class KnowledgeEntity implements KnowledgeEntityInterface
 
     public function asPhpCodeNew(): string
     {
-        $namePerLanguage = [];
-        foreach ($this->namePerLanguage as $language => $name) {
-            $namePerLanguage[] = '\''.$language.'\' => \''.addslashes($name).'\'';
+        $titlePerLanguage = [];
+        foreach ($this->titlePerLanguage as $language => $name) {
+            $titlePerLanguage[] = '\''.$language.'\' => \''.addslashes($name).'\'';
         }
 
-        return 'new \\'.self::class.'(['.implode(', ', $namePerLanguage).'], \''.$this->getId().'\')';
+        return 'new \\'.self::class.'(['.implode(', ', $titlePerLanguage).'], \''.$this->getId().'\')';
     }
 }

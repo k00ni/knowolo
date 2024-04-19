@@ -62,7 +62,7 @@ class KnowledgeModuleTest extends TestCase
         // subject under test
         $sut = new KnowledgeModule($termInfo);
 
-        $this->assertEquals(['Plant'], $sut->getBroaderTerms('Tree')->asListOfNames());
+        $this->assertEquals(['Plant'], $sut->getBroaderTerms('Tree')->asListOfTitles());
     }
 
     public function testGetNarrowerTerms(): void
@@ -80,6 +80,6 @@ class KnowledgeModuleTest extends TestCase
         // subject under test
         $sut = new KnowledgeModule($termInfo);
 
-        $this->assertEquals(['Oak'], $sut->getNarrowerTerms('Tree')->asListOfNames());
+        $this->assertEquals(['Oak'], $sut->getNarrowerTerms('Tree')->asListOfTitles());
     }
 }

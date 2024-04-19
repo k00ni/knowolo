@@ -71,7 +71,7 @@ class KnowledgeEntityListTest extends TestCase
         // set narrower relations
         $termInfo->addRelatedEntitiesOfLowerOrder($plant, [$tree]);
 
-        $this->assertEquals([], $termInfo->getRelatedEntitiesOfHigherOrder($tree)->asArray());
+        $this->assertEquals([$plant], $termInfo->getRelatedEntitiesOfHigherOrder($tree)->asArray());
     }
 
     public function testIndirectRelatedEntitiesOfLowerOrder(): void
@@ -84,10 +84,10 @@ class KnowledgeEntityListTest extends TestCase
         // set broader relations
         $termInfo->addRelatedEntitiesOfHigherOrder($tree, [$plant]);
 
-        $this->assertEquals([], $termInfo->getRelatedEntitiesOfLowerOrder($plant)->asArray());
+        $this->assertEquals([$tree], $termInfo->getRelatedEntitiesOfLowerOrder($plant)->asArray());
     }
 
-    public function testAsListOfNames(): void
+    public function testAsListOfTitles(): void
     {
         $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
         $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
@@ -100,23 +100,23 @@ class KnowledgeEntityListTest extends TestCase
         // terms in default language
         $this->assertEquals(
             ['Tree', 'Plant'],
-            $termInfo->asListOfNames()
+            $termInfo->asListOfTitles()
         );
 
         // terms in German (de)
         $this->assertEquals(
             ['Baum', 'Pflanze'],
-            $termInfo->asListOfNames('de')
+            $termInfo->asListOfTitles('de')
         );
 
         // terms in English (en)
         $this->assertEquals(
             ['Tree', 'Plant'],
-            $termInfo->asListOfNames('en')
+            $termInfo->asListOfTitles('en')
         );
     }
 
-    public function testAsListOfNamesNonExistingLanguage(): void
+    public function testAsListOfTitlesNonExistingLanguage(): void
     {
         $this->expectExceptionMessage('No names available or no name for given language.');
 
@@ -124,6 +124,48 @@ class KnowledgeEntityListTest extends TestCase
 
         $termInfo = $this->getSubjectUnderTest([$plant]);
 
-        $termInfo->asListOfNames('fr');
+        $termInfo->asListOfTitles('fr');
+    }
+
+    public function testSortByTitleAscendingNoLanguageGiven(): void
+    {
+        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
+        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+
+        $termInfo = $this->getSubjectUnderTest();
+        $termInfo->addEntities([$tree, $plant]);
+
+        // No language given, so it uses first matching language (en)
+        $termInfo->sortByTitleAscending();
+
+        $this->assertEquals(['Plant', 'Tree'], $termInfo->asListOfTitles());
+    }
+
+    public function testSortByTitleAscendingByLanguage(): void
+    {
+        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
+        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+
+        $termInfo = $this->getSubjectUnderTest();
+        $termInfo->addEntities([$tree, $plant]);
+
+        // sort by English titles
+        $termInfo->sortByTitleAscending('en');
+        $this->assertEquals(['Plant', 'Tree'], $termInfo->asListOfTitles());
+
+        // sort by German titles
+        $termInfo->sortByTitleAscending('de');
+        $this->assertEquals(['Tree', 'Plant'], $termInfo->asListOfTitles());
+    }
+
+    public function testNoSorting(): void
+    {
+        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
+        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+
+        $termInfo = $this->getSubjectUnderTest();
+        $termInfo->addEntities([$tree, $plant]);
+
+        $this->assertEquals(['Tree', 'Plant'], $termInfo->asListOfTitles());
     }
 }
