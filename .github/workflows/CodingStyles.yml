@@ -26,7 +26,7 @@ jobs:
                     tools: cs2pr
 
             -   name: Install Composer dependencies
-                run: cd scripts && composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+                run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
 
             -   name: Coding styles
-                run: cd scripts && php vendor/bin/php-cs-fixer fix --verbose --dry-run --format=checkstyle | cs2pr
+                run: php vendor/bin/php-cs-fixer fix --verbose --dry-run --format=checkstyle | cs2pr

@@ -25,10 +25,13 @@ jobs:
                     ini-values: memory_limit=1G
 
             -   name: Install Composer dependencies
-                run: cd scripts && composer install --no-progress --prefer-dist --optimize-autoloader
+                run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+            -   name: Static Code Analyzer
+                run: vendor/bin/phpstan
 
             -   name: Tests
-                run: cd scripts && vendor/bin/phpunit
+                run: vendor/bin/phpunit
 
     windows-tests:
         name: Windows-Tests with PHP ${{ matrix.php-versions }}
@@ -50,7 +53,10 @@ jobs:
                     ini-values: memory_limit=1G
 
             -   name: Install Composer dependencies
-                run: cd scripts && composer update --no-progress --prefer-dist --optimize-autoloader
+                run: composer update --no-progress --prefer-dist --optimize-autoloader
+
+            -   name: Static Code Analyzer
+                run: vendor/bin/phpstan
 
             -   name: Tests
-                run: cd scripts && vendor/bin/phpunit
+                run: vendor/bin/phpunit
