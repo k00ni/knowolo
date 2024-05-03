@@ -6,7 +6,7 @@ namespace Knowolo\Generator;
 
 use Knowolo\Config;
 use Knowolo\DefaultImplementation\KnowledgeEntityList;
-use Knowolo\KnowledgeEntityListInterface;
+use Knowolo\KnowledgeModuleInterface;
 
 /**
  * Generates serialized PHP code for a given set of data.
@@ -30,29 +30,28 @@ class SerializedPhpCodeGenerator extends AbstractGenerator
         $termsInformation = $config->getIncludeTermInformation()
             ? $this->buildTermInformation($graph, $config)
             : new KnowledgeEntityList();
+        $termsInformation->sortByTitleAscending($config->getSortAllEntitiesByTitleAscUsingLanguage());
 
         // class information
         $classInformation = $config->getIncludeClassInformation()
             ? $this->buildClassInformation($graph, $config)
             : new KnowledgeEntityList();
-
-        $termsInformation->sortByTitleAscending($config->getSortAllEntitiesByTitleAscUsingLanguage());
         $classInformation->sortByTitleAscending($config->getSortAllEntitiesByTitleAscUsingLanguage());
 
-        return $this->generateSerializedPhpCode($termsInformation, $classInformation, $config);
+        // init and fill module
+        $moduleClassPath = $config->getPhpModuleClasspath();
+
+        /** @var \Knowolo\KnowledgeModuleInterface */
+        $knowledgeModule = new $moduleClassPath($config, $termsInformation, $classInformation);
+
+        return $this->generateSerializedPhpCode($knowledgeModule);
     }
 
     /**
      * @return non-empty-string
      */
-    private function generateSerializedPhpCode(
-        KnowledgeEntityListInterface $termsInformation,
-        KnowledgeEntityListInterface $classInformation,
-        Config $config
-    ): string {
-        $moduleClassPath = $config->getPhpModuleClasspath();
-        $knowledgeModule = new $moduleClassPath($termsInformation, $classInformation);
-
+    private function generateSerializedPhpCode(KnowledgeModuleInterface $knowledgeModule): string
+    {
         /** @var non-empty-string */
         $str = '<?php';
         $str .= PHP_EOL;

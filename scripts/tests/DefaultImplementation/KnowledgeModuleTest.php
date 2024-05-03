@@ -2,6 +2,7 @@
 
 namespace Tests\DefaultImplementation;
 
+use Knowolo\Config;
 use Knowolo\DefaultImplementation\KnowledgeEntity;
 use Knowolo\DefaultImplementation\KnowledgeEntityList;
 use Knowolo\DefaultImplementation\KnowledgeModule;
@@ -21,8 +22,10 @@ class KnowledgeModuleTest extends TestCase
         $classInformation->addRelatedEntitiesOfHigherOrder($tree, [$plant]);
         $classInformation->addRelatedEntitiesOfHigherOrder($oak, [$tree]);
 
+        $config = $this->createMock(Config::class);
+
         // subject under test
-        $sut = new KnowledgeModule(null, $classInformation);
+        $sut = new KnowledgeModule($config, null, $classInformation);
 
         $this->assertEquals([$plant], $sut->getSuperClasses($tree)->asArray());
         $this->assertEquals([$plant], $sut->getSuperClasses('Tree')->asArray());
@@ -40,8 +43,10 @@ class KnowledgeModuleTest extends TestCase
         $classInformation->addRelatedEntitiesOfLowerOrder($plant, [$tree]);
         $classInformation->addRelatedEntitiesOfLowerOrder($tree, [$oak]);
 
+        $config = $this->createMock(Config::class);
+
         // subject under test
-        $sut = new KnowledgeModule(null, $classInformation);
+        $sut = new KnowledgeModule($config, null, $classInformation);
 
         $this->assertEquals([$oak], $sut->getSubClasses($tree)->asArray());
         $this->assertEquals([$oak], $sut->getSubClasses('Tree')->asArray());
@@ -59,8 +64,10 @@ class KnowledgeModuleTest extends TestCase
         $termInfo->addRelatedEntitiesOfHigherOrder($tree, [$plant]);
         $termInfo->addRelatedEntitiesOfHigherOrder($oak, [$tree]);
 
+        $config = $this->createMock(Config::class);
+
         // subject under test
-        $sut = new KnowledgeModule($termInfo);
+        $sut = new KnowledgeModule($config, $termInfo);
 
         $this->assertEquals(['Plant'], $sut->getBroaderTerms('Tree')->asListOfTitles());
     }
@@ -77,8 +84,10 @@ class KnowledgeModuleTest extends TestCase
         $termInfo->addRelatedEntitiesOfLowerOrder($plant, [$tree]);
         $termInfo->addRelatedEntitiesOfLowerOrder($tree, [$oak]);
 
+        $config = $this->createMock(Config::class);
+
         // subject under test
-        $sut = new KnowledgeModule($termInfo);
+        $sut = new KnowledgeModule($config, $termInfo);
 
         $this->assertEquals(['Oak'], $sut->getNarrowerTerms('Tree')->asListOfTitles());
     }

@@ -4,41 +4,47 @@ declare(strict_types=1);
 
 namespace Knowolo;
 
+use Knowolo\Config\GeneralInformation;
+
 /**
- * Represents a config file
+ * Represents a config file.
+ *
+ * @api
  */
-readonly class Config
+class Config
 {
     /**
      * If true, class titles are being changed so each word starts with an uppercase letter
      * followed by lowercase letters.
      */
-    private bool $alignClassTitles;
-    private bool $compressClassIds;
-    private bool $compressTermIds;
+    private readonly bool $alignClassTitles;
+    private readonly bool $compressClassIds;
+    private readonly bool $compressTermIds;
 
     /**
      * @var array<non-empty-string> List of label properties (shortend URIs, e.g. rdfs:label)
      */
-    private array $customLabelPropertiesForClasses;
+    private readonly array $customLabelPropertiesForClasses;
 
-    private bool $includeTermInformation;
-    private bool $includeClassInformation;
+    private GeneralInformation $generalInformation;
+
+    private readonly bool $includeTermInformation;
+    private readonly bool $includeClassInformation;
 
     /**
      * @var array<non-empty-string>
      */
-    private array $preferedLanguages;
+    private readonly array $preferedLanguages;
 
     /**
      * @var class-string
      */
-    private string $phpModuleClasspath;
+    private readonly string $phpModuleClasspath;
 
     /**
      * @var string|null
      */
-    private string|null $sortAllEntitiesByTitleAscUsingLanguage;
+    private readonly string|null $sortAllEntitiesByTitleAscUsingLanguage;
 
     /**
      * @param string|null $json
@@ -57,6 +63,21 @@ readonly class Config
                 throw new Exception('JSON parsing failed: '.json_last_error_msg());
             }
         }
+
+        // general-information
+        if (isset($configArr['general-information']) && is_array($configArr['general-information'])) {
+            $gi = new GeneralInformation(
+                $configArr['general-information']['title'] ?? null,
+                $configArr['general-information']['summary'] ?? null,
+                $configArr['general-information']['homepage'] ?? null,
+                $configArr['general-information']['license'] ?? null,
+                $configArr['general-information']['authors'] ?? null,
+            );
+        } else {
+            $gi = new GeneralInformation();
+        }
+
+        $this->generalInformation = $gi;
 
         // align-class-titles
         if (isset($configArr['align-class-titles']) && is_bool($configArr['align-class-titles'])) {
@@ -136,10 +157,13 @@ readonly class Config
             isset($configArr['sort-all-entities-by-title-asc-using-language'])
             && (
                 is_string($configArr['sort-all-entities-by-title-asc-using-language'])
-                || null === $configArr['sort-all-entities-by-title-asc-using-language']
+                || null == $configArr['sort-all-entities-by-title-asc-using-language']
             )
         ) {
-            $this->sortAllEntitiesByTitleAscUsingLanguage = $configArr['sort-all-entities-by-title-asc-using-language'];
+            // PHPStan acrobatics (casting fails; (string|null) does not accept array|float|int|string|false)
+            /** @var string|null */
+            $sortAll = $configArr['sort-all-entities-by-title-asc-using-language'];
+            $this->sortAllEntitiesByTitleAscUsingLanguage = $sortAll;
         } else {
             $this->sortAllEntitiesByTitleAscUsingLanguage = null;
         }
@@ -200,5 +224,10 @@ readonly class Config
     public function getSortAllEntitiesByTitleAscUsingLanguage(): string|null
     {
         return $this->sortAllEntitiesByTitleAscUsingLanguage;
+    }
+
+    public function getGeneralInformation(): GeneralInformation
+    {
+        return $this->generalInformation;
     }
 }

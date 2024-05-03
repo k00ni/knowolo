@@ -9,6 +9,9 @@ use Knowolo\KnowledgeEntityInterface;
 
 use function Knowolo\isEmpty;
 
+/**
+ * @api
+ */
 class KnowledgeEntity implements KnowledgeEntityInterface
 {
     /**

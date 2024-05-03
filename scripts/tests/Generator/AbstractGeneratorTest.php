@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DefaultImplementation;
+namespace Tests\Generator;
 
 use EasyRdf\Graph;
 use Knowolo\Config;

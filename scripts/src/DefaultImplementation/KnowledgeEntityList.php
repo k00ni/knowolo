@@ -7,6 +7,9 @@ namespace Knowolo\DefaultImplementation;
 use Knowolo\KnowledgeEntityInterface;
 use Knowolo\KnowledgeEntityListInterface;
 
+/**
+ * @api
+ */
 class KnowledgeEntityList implements KnowledgeEntityListInterface
 {
     /**

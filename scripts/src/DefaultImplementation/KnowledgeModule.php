@@ -4,22 +4,57 @@ declare(strict_types=1);
 
 namespace Knowolo\DefaultImplementation;
 
+use Knowolo\Config;
 use Knowolo\Exception;
 use Knowolo\KnowledgeEntityInterface;
 use Knowolo\KnowledgeEntityListInterface;
 use Knowolo\KnowledgeModuleInterface;
+use Stringable;
 
+/**
+ * @api
+ */
 class KnowledgeModule implements KnowledgeModuleInterface
 {
-    protected KnowledgeEntityListInterface $classInformation;
-    protected KnowledgeEntityListInterface $termInformation;
+    private Config $config;
+
+    private KnowledgeEntityListInterface $classInformation;
+
+    private KnowledgeEntityListInterface $termInformation;
 
     public function __construct(
+        Config $config,
         KnowledgeEntityListInterface $termInformation = null,
         KnowledgeEntityListInterface $classInformation = null
     ) {
+        $this->config = $config;
         $this->classInformation = $classInformation ?? new KnowledgeEntityList();
         $this->termInformation = $termInformation ?? new KnowledgeEntityList();
+    }
+
+    public function getTitle(): string|null
+    {
+        return $this->config->getGeneralInformation()->getTitle();
+    }
+
+    public function getSummary(): string|null
+    {
+        return $this->config->getGeneralInformation()->getSummary();
+    }
+
+    public function getHomepage(): string|null
+    {
+        return $this->config->getGeneralInformation()->getHomepage();
+    }
+
+    public function getLicense(): Stringable|string|null
+    {
+        return $this->config->getGeneralInformation()->getLicense();
+    }
+
+    public function getAuthors(): Stringable|string|null
+    {
+        return $this->config->getGeneralInformation()->getAuthors();
     }
 
     /**

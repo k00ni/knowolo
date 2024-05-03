@@ -53,6 +53,7 @@ class GenerateSerializedPhpCodeCommand extends Command
 
     /**
      * @throws \InvalidArgumentException
+     * @throws \TypeError
      * @throws \Knowolo\Exception if parameter url_or_local_path_to_rdf_file can not be casted to string
      * @throws \Knowolo\Exception if RDF file does not exist
      * @throws \Knowolo\Exception if RDF file has unknown format

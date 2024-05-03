@@ -51,7 +51,7 @@ abstract class AbstractGenerator
     abstract public function generateFileData(string $urlOrLocalPathToRdfFile, Config $config): string;
 
     /**
-     * Builds an EasyRdf Graph instance which is used the query the data later on.
+     * Builds an Graph instance which is used the query the data later on.
      *
      * @throws \InvalidArgumentException
      */

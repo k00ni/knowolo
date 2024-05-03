@@ -10,6 +10,13 @@ class ConfigTest extends TestCase
     public function testInit(): void
     {
         $config = new Config(json_encode([
+            'general-information' => [
+                'title' => 'title1',
+                'summary' => 'summary1',
+                'license' => 'license1',
+                'homepage' => 'homepage1',
+                'authors' => 'authors1'
+            ],
             'include-term-information' => true,
             'include-class-information' => false,
             'prefered-languages' => ['fr', 'it'],
@@ -27,6 +34,13 @@ class ConfigTest extends TestCase
         $this->assertEquals(['rdfs:label'], $config->getCustomLabelPropertiesForClasses());
         $this->assertTrue($config->getCompressClassIds());
         $this->assertTrue($config->getCompressTermIds());
+
+        // check general information
+        $this->assertEquals('title1', $config->getGeneralInformation()->getTitle());
+        $this->assertEquals('summary1', $config->getGeneralInformation()->getSummary());
+        $this->assertEquals('license1', $config->getGeneralInformation()->getLicense());
+        $this->assertEquals('homepage1', $config->getGeneralInformation()->getHomepage());
+        $this->assertEquals('authors1', $config->getGeneralInformation()->getAuthors());
     }
 
     /**
