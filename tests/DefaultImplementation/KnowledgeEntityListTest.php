@@ -118,13 +118,11 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testAsListOfTitlesNonExistingLanguage(): void
     {
-        $this->expectExceptionMessage('No names available or no name for given language.');
-
         $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
 
         $termInfo = $this->getSubjectUnderTest([$plant]);
 
-        $termInfo->asListOfTitles('fr');
+        $this->assertEquals(['Plant'], $termInfo->asListOfTitles('fr'));
     }
 
     public function testSortByTitleAscendingNoLanguageGiven(): void

@@ -14,8 +14,8 @@ interface KnowledgeEntityInterface
     /**
      * A name (or title or label) of an entity. It must not be empty.
      *
-     * @param string|null       $language Language of the name, usually 2 or 3 characters, such as en.
-     *                          If its null or not set, then the implementation determines the language.
+     * @param string|null $language Language of the name, usually 2 or 3 characters, such as en.
+     *                    If its null or not set, then the implementation determines the language.
      *
      * @return non-empty-string
      */

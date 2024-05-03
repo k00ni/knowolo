@@ -14,7 +14,7 @@ The ICF is provided as an ontology in a machine readable format (ICF_1.0.2_2012-
 Use the following command to generate this class:
 
 ```bash
-php scripts/bin/knowolo know:generate-serialized-php-code \
+php bin/knowolo know:generate-serialized-php-code \
     examples/ClassHierarchy_ICF/ICF_1.0.2_2012-08-05.owl \
     examples/ClassHierarchy_ICF/knowolo.json \
     > examples/ClassHierarchy_ICF/ICF.php

@@ -14,10 +14,10 @@ Source: https://en.wikipedia.org/wiki/Thesaurus_(information_retrieval)
 
 Generated PHP file with knowledge module: [STWThesaurusForEconomics.php](./STWThesaurusForEconomics.php)
 
-`STWThesaurusForEconomics.php` contains a ready to use instance of [KnowledgeModuleInterface.php](./../../scripts/src/KnowledgeModuleInterface.php).
+`STWThesaurusForEconomics.php` contains a ready to use instance of [KnowledgeModuleInterface.php](./../../src/KnowledgeModuleInterface.php).
 This instance represents a huge chunk of the **STW Thesaurus for Economics**.
 You can use various functions to access the content of the thesaurus without the need to know what RDF, Turtle, triples etc. are.
-Our API is very simple and easy to use without prior knowledge: [KnowledgeModuleInterface.php](./../../scripts/src/KnowledgeModuleInterface.php)
+Our API is very simple and easy to use without prior knowledge: [KnowledgeModuleInterface.php](./../../src/KnowledgeModuleInterface.php)
 
 **Example code:**
 
@@ -55,7 +55,7 @@ Agricultural policy (narrower terms):
 Use the following command to generate this class:
 
 ```bash
-php scripts/bin/knowolo know:generate-serialized-php-code \
+php bin/knowolo know:generate-serialized-php-code \
     examples/STWThesaurusForEconomics/stw.ttl \
     examples/STWThesaurusForEconomics/knowolo.json \
     > examples/STWThesaurusForEconomics/STWThesaurusForEconomics.php

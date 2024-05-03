@@ -2,6 +2,11 @@
 
 Compile (factual) knowledge as a class for easier usage.
 
+**Status:** Under heavy development, Pre-Alpha
+
+But you should have a look into the [examples](./examples/) folder (see demo.php).
+They already show what this approach is able to accomplish.
+
 ## License
 
 MIT, see [LICENSE](./LICENSE).

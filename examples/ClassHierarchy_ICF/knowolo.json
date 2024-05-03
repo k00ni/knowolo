@@ -1,4 +1,11 @@
 {
+    "general-information": {
+        "title": "International Classification of Functioning, Disability and Health (ICF)",
+        "summary": "The International Classification of Functioning, Disability and Health, known more commonly as **ICF**, is a classification of health and health-related domains. These domains are classified from body, individual and societal perspectives by means of two lists: a list of body functions and structure, and a list of domains of activity and participation. Since an individual's functioning and disability occurs in a context, the ICF also includes a list of environmental factors.",
+        "license": null,
+        "homepage": "https://bioportal.bioontology.org/ontologies/ICF/?p=summary",
+        "authors": null
+    },
     "include-term-information": false,
     "include-class-information": true,
     "prefered-languages": [],

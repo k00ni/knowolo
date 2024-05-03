@@ -45,20 +45,26 @@ class KnowledgeEntity implements KnowledgeEntityInterface
         $this->titlePerLanguage = $titlePerLanguage;
     }
 
-    /**
-     * @throws \Knowolo\Exception if there are no names or no name for given language available.
-     */
     public function getTitle(string|null $language = null): string
     {
+        // no language given, but titles available
         if (isEmpty($language) && 0 < count($this->titlePerLanguage)) {
             return array_values($this->titlePerLanguage)[0];
         } elseif (
             false === isEmpty($language)
             && true === isset($this->titlePerLanguage[$language])
         ) {
+            // language given and related title is available
             return $this->titlePerLanguage[$language];
+        } elseif (
+            false === isEmpty($language)
+            && 0 < count($this->titlePerLanguage)
+            && false === isset($this->titlePerLanguage[$language])
+        ) {
+            // language given but related title not available
+            return array_values($this->titlePerLanguage)[0];
         } else {
-            throw new Exception('No names available or no name for given language.');
+            return $this->getId();
         }
     }
 
