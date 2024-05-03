@@ -5,4 +5,4 @@ default:
 	@echo ""
 
 prepare:
-	cd scripts && vendor/bin/php-cs-fixer fix && vendor/bin/phpunit && vendor/bin/phpstan
+	vendor/bin/php-cs-fixer fix && vendor/bin/phpunit && vendor/bin/phpstan

@@ -1,4 +1,4 @@
-scripts/composer.lock
-scripts/vendor
-scripts/.phpunit.cache
-scripts/.php-cs-fixer.cache
+composer.lock
+vendor
+.phpunit.cache
+.php-cs-fixer.cache
