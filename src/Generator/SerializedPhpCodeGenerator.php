@@ -15,8 +15,9 @@ class SerializedPhpCodeGenerator extends AbstractGenerator
 {
     /**
      * @throws \InvalidArgumentException
-     * @throws \Knowolo\Exception if RDF file does not exist
-     * @throws \Knowolo\Exception if RDF file has unknown format
+     * @throws \ValueError
+     * @throws \Knowolo\Exception\KnowoloException if RDF file does not exist
+     * @throws \Knowolo\Exception\KnowoloException if RDF file has unknown format
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \quickRdfIo\RdfIoException
      */

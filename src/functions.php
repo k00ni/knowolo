@@ -6,7 +6,6 @@ namespace Knowolo;
 
 use Curl\Curl;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * empty() is not enough to check if something is really empty.
@@ -48,7 +47,7 @@ function sendCachedRequest(string $url, int $limitDownloadSizeTo = 0): string
 
     // ask cache for entry
     // if there isn't one, run HTTP request and return response content
-    return $cache->get($key, function (ItemInterface $item) use ($limitDownloadSizeTo, $url): string {
+    return $cache->get($key, function () use ($limitDownloadSizeTo, $url): string {
         $curl = new Curl();
         $curl->setConnectTimeout(30);
         $curl->setMaximumRedirects(10);

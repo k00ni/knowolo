@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Knowolo\Command;
 
 use Knowolo\Config;
-use Knowolo\Exception;
+use Knowolo\Exception\KnowoloException;
 use Knowolo\Generator\SerializedPhpCodeGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -54,9 +54,10 @@ class GenerateSerializedPhpCodeCommand extends Command
     /**
      * @throws \InvalidArgumentException
      * @throws \TypeError
-     * @throws \Knowolo\Exception if parameter url_or_local_path_to_rdf_file can not be casted to string
-     * @throws \Knowolo\Exception if RDF file does not exist
-     * @throws \Knowolo\Exception if RDF file has unknown format
+     * @throws \ValueError
+     * @throws \Knowolo\Exception\KnowoloException if parameter url_or_local_path_to_rdf_file can not be casted to string
+     * @throws \Knowolo\Exception\KnowoloException if RDF file does not exist
+     * @throws \Knowolo\Exception\KnowoloException if RDF file has unknown format
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \quickRdfIo\RdfIoException
      */
@@ -66,7 +67,7 @@ class GenerateSerializedPhpCodeCommand extends Command
         /** @var string|null */
         $urlOrLocalPathToRdfFile = $input->getArgument('url_or_local_path_to_rdf_file');
         if (isEmpty($urlOrLocalPathToRdfFile)) {
-            throw new Exception('Argument url_or_local_path_to_rdf_file can not be empty');
+            throw new KnowoloException('Argument url_or_local_path_to_rdf_file can not be empty');
         }
         /** @var non-empty-string */
         $urlOrLocalPathToRdfFile = (string) $urlOrLocalPathToRdfFile;

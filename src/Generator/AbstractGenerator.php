@@ -9,10 +9,11 @@ use EasyRdf\Graph;
 use EasyRdf\Literal;
 use EasyRdf\Resource;
 use Knowolo\Config;
-use Knowolo\Exception;
 use Knowolo\DefaultImplementation\KnowledgeEntity;
 use Knowolo\DefaultImplementation\KnowledgeEntityList;
+use Knowolo\Exception\KnowoloException;
 use Knowolo\KnowledgeEntityListInterface;
+use Knowolo\LanguageRelatedStringHandler;
 use quickRdfIo\Util;
 use rdfInterface\DataFactoryInterface;
 use rdfInterface\LiteralInterface;
@@ -133,24 +134,24 @@ abstract class AbstractGenerator
     /**
      * @return array<string,non-empty-string>
      */
-    private function buildLanguageToNamesList(Resource $resource, Config $config): array
+    private function buildLanguageToTitleList(Resource $resource, Config $config): array
     {
         $labelProps = 0 < count($config->getCustomLabelPropertiesForClasses())
             ? $config->getCustomLabelPropertiesForClasses()
             : $this->defaultLabelProps;
 
-        $languageToNamesList = [];
+        $languageToTitleList = [];
         foreach ($config->getPreferedLanguages() as $lang) {
             $value = $resource->label($lang, $labelProps)?->getValue() ?? null;
 
             if (is_scalar($value) && false === isEmpty($value)) {
                 /** @var non-empty-string */
                 $value = (string) $value;
-                $languageToNamesList[$lang] = $value;
+                $languageToTitleList[$lang] = $value;
             }
         }
 
-        if (0 == count($languageToNamesList)) {
+        if (0 == count($languageToTitleList)) {
             $value = $resource->label(null, $labelProps)?->getValue() ?? null;
             if (is_scalar($value) && false === isEmpty($value)) {
                 /** @var non-empty-string */
@@ -162,37 +163,40 @@ abstract class AbstractGenerator
                     $value = ucfirst($value);
                 }
 
-                $languageToNamesList[''] = $value;
+                $languageToTitleList[''] = $value;
             }
         }
 
-        return $languageToNamesList;
+        return $languageToTitleList;
     }
 
     /**
      * Builds class information.
      *
-     * @throws \Knowolo\Exception
+     * @throws \ValueError
+     * @throws \Knowolo\Exception\KnowoloException
      */
     protected function buildClassInformation(Graph $graph, Config $config): KnowledgeEntityListInterface
     {
         $knowledgeEntityList = new KnowledgeEntityList();
 
         foreach ($graph->allOfType('owl:Class') as $resource) {
-            $langToNames = $this->buildLanguageToNamesList($resource, $config);
+            $langToNames = $this->buildLanguageToTitleList($resource, $config);
             if (0 == count($langToNames)) {
                 continue;
             }
+            $langToNames = new LanguageRelatedStringHandler($langToNames);
 
             $entity = new KnowledgeEntity($langToNames, $this->buildClassId($resource->getUri(), $config));
             $knowledgeEntityList->add($entity);
 
             // super class
             foreach ($resource->allResources('rdfs:subClassOf') as $relatedEntity) {
-                $langToNames = $this->buildLanguageToNamesList($relatedEntity, $config);
+                $langToNames = $this->buildLanguageToTitleList($relatedEntity, $config);
                 if (0 == count($langToNames)) {
                     continue;
                 }
+                $langToNames = new LanguageRelatedStringHandler($langToNames);
 
                 $relatedEntity = new KnowledgeEntity($langToNames, $this->buildClassId($relatedEntity->getUri(), $config));
                 $knowledgeEntityList->addRelatedEntitiesOfHigherOrder($entity, [$relatedEntity]);
@@ -205,37 +209,42 @@ abstract class AbstractGenerator
     /**
      * Builds terms information.
      *
-     * @throws \Knowolo\Exception
+     * @throws \ValueError
+     * @throws \Knowolo\Exception\KnowoloException
      */
     protected function buildTermInformation(Graph $graph, Config $config): KnowledgeEntityListInterface
     {
         $knowledgeEntityList = new KnowledgeEntityList();
 
         foreach ($graph->allOfType('skos:Concept') as $resource) {
-            $langToNames = $this->buildLanguageToNamesList($resource, $config);
-            if (0 == count($langToNames)) {
+            $langToTitles = $this->buildLanguageToTitleList($resource, $config);
+            if (0 == count($langToTitles)) {
                 continue;
             }
+            $langToTitles = new LanguageRelatedStringHandler($langToTitles);
 
-            $entity = new KnowledgeEntity($langToNames, $this->buildTermId($resource->getUri(), $config));
+            $entity = new KnowledgeEntity($langToTitles, $this->buildTermId($resource->getUri(), $config));
             $knowledgeEntityList->add($entity);
 
             // broader terms
             foreach ($resource->allResources('skos:broader') as $relatedEntity) {
-                $langToNames = $this->buildLanguageToNamesList($relatedEntity, $config);
+                $langToNames = $this->buildLanguageToTitleList($relatedEntity, $config);
                 if (0 == count($langToNames)) {
                     continue;
                 }
+                $langToNames = new LanguageRelatedStringHandler($langToNames);
+
                 $relatedEntity = new KnowledgeEntity($langToNames, $this->buildTermId($relatedEntity->getUri(), $config));
                 $knowledgeEntityList->addRelatedEntitiesOfHigherOrder($entity, [$relatedEntity]);
             }
 
             // narrower terms
             foreach ($resource->allResources('skos:narrower') as $relatedEntity) {
-                $langToNames = $this->buildLanguageToNamesList($relatedEntity, $config);
+                $langToNames = $this->buildLanguageToTitleList($relatedEntity, $config);
                 if (0 == count($langToNames)) {
                     continue;
                 }
+                $langToNames = new LanguageRelatedStringHandler($langToNames);
 
                 $relatedEntity = new KnowledgeEntity($langToNames, $this->buildTermId($relatedEntity->getUri(), $config));
                 $knowledgeEntityList->addRelatedEntitiesOfLowerOrder($entity, [$relatedEntity]);
@@ -248,8 +257,8 @@ abstract class AbstractGenerator
     /**
      * @param non-empty-string $urlOrLocalPathToRdfFile
      *
-     * @throws \Knowolo\Exception if RDF file does not exist
-     * @throws \Knowolo\Exception if RDF file has unknown format
+     * @throws \Knowolo\Exception\KnowoloException if RDF file does not exist
+     * @throws \Knowolo\Exception\KnowoloException if RDF file has unknown format
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \quickRdfIo\RdfIoException
      */
@@ -263,12 +272,12 @@ abstract class AbstractGenerator
             $rdfContent = (string) file_get_contents($urlOrLocalPathToRdfFile);
         } else {
             $msg = 'It seems that given path to RDF file is neither an URL nor an existing, local file: '.$urlOrLocalPathToRdfFile;
-            throw new Exception($msg);
+            throw new KnowoloException($msg);
         }
 
         $format = Format::guessFormat($rdfContent)?->getName() ?? null;
         if (null == $format) {
-            throw new Exception('File has unknown format');
+            throw new KnowoloException('File has unknown format');
         }
 
         // parse RDF and create iterator instance

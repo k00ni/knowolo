@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Knowolo;
 
 use Knowolo\Config\GeneralInformation;
+use Knowolo\Exception\KnowoloException;
 
 /**
  * Represents a config file.
@@ -49,8 +50,8 @@ class Config
     /**
      * @param string|null $json
      *
-     * @throws \Knowolo\Exception if JSON parsing failed
-     * @throws \Knowolo\Exception if a field is invalid
+     * @throws \Knowolo\Exception\KnowoloException if JSON parsing failed
+     * @throws \Knowolo\Exception\KnowoloException if a field is invalid
      */
     public function __construct(string|null $json = null)
     {
@@ -60,7 +61,7 @@ class Config
             /** @var array<string, mixed> */
             $configArr = json_decode((string) $json, true);
             if (0 < json_last_error()) {
-                throw new Exception('JSON parsing failed: '.json_last_error_msg());
+                throw new KnowoloException('JSON parsing failed: '.json_last_error_msg());
             }
         }
 
@@ -111,7 +112,7 @@ class Config
         }
         foreach ($this->customLabelPropertiesForClasses as $label) {
             if (isEmpty($label)) {
-                throw new Exception('Field custom-label-properties-for-classes must not contain an empty-string entry');
+                throw new KnowoloException('Field custom-label-properties-for-classes must not contain an empty-string entry');
             }
         }
 
@@ -137,7 +138,7 @@ class Config
         }
         foreach ($this->preferedLanguages as $language) {
             if (isEmpty($language)) {
-                throw new Exception('Field prefered-language contains an empty-string entry');
+                throw new KnowoloException('Field prefered-language contains an empty-string entry');
             }
         }
 

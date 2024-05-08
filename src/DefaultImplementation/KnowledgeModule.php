@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Knowolo\DefaultImplementation;
 
 use Knowolo\Config;
-use Knowolo\Exception;
+use Knowolo\Exception\KnowoloException;
 use Knowolo\KnowledgeEntityInterface;
 use Knowolo\KnowledgeEntityListInterface;
 use Knowolo\KnowledgeModuleInterface;
@@ -58,7 +58,7 @@ class KnowledgeModule implements KnowledgeModuleInterface
     }
 
     /**
-     * @throws \Knowolo\Exception if a term was not found
+     * @throws \Knowolo\Exception\KnowoloException if a term was not found
      */
     public function getBroaderTerms(
         string|KnowledgeEntityInterface $term,
@@ -70,14 +70,14 @@ class KnowledgeModule implements KnowledgeModuleInterface
 
         $termIsNotValidInstance = false === $term instanceof KnowledgeEntityInterface;
         if ($termIsNotValidInstance) {
-            throw new Exception('No term found with name: ' . $term . ' in language: ' . $language);
+            throw new KnowoloException('No term found with name: ' . $term . ' in language: ' . $language);
         }
 
         return $this->termInformation->getRelatedEntitiesOfHigherOrder($term);
     }
 
     /**
-     * @throws \Knowolo\Exception if a term was not found
+     * @throws \Knowolo\Exception\KnowoloException if a term was not found
      */
     public function getNarrowerTerms(
         string|KnowledgeEntityInterface $term,
@@ -89,7 +89,7 @@ class KnowledgeModule implements KnowledgeModuleInterface
 
         $termIsNotValidInstance = false === $term instanceof KnowledgeEntityInterface;
         if ($termIsNotValidInstance) {
-            throw new Exception('No term found with name: ' . $term . ' in language: ' . $language);
+            throw new KnowoloException('No term found with name: ' . $term . ' in language: ' . $language);
         }
 
         return $this->termInformation->getRelatedEntitiesOfLowerOrder($term);
@@ -101,7 +101,7 @@ class KnowledgeModule implements KnowledgeModuleInterface
     }
 
     /**
-     * @throws \Knowolo\Exception if a class was not found
+     * @throws \Knowolo\Exception\KnowoloException if a class was not found
      */
     public function getSuperClasses(
         string|KnowledgeEntityInterface $class,
@@ -113,14 +113,14 @@ class KnowledgeModule implements KnowledgeModuleInterface
 
         $classIsNotValidInstance = false === $class instanceof KnowledgeEntityInterface;
         if ($classIsNotValidInstance) {
-            throw new Exception('No class found with name: ' . $class . ' in language: ' . $language);
+            throw new KnowoloException('No class found with name: ' . $class . ' in language: ' . $language);
         }
 
         return $this->classInformation->getRelatedEntitiesOfHigherOrder($class);
     }
 
     /**
-     * @throws \Knowolo\Exception if a class was not found
+     * @throws \Knowolo\Exception\KnowoloException if a class was not found
      */
     public function getSubClasses(
         string|KnowledgeEntityInterface $class,
@@ -132,7 +132,7 @@ class KnowledgeModule implements KnowledgeModuleInterface
 
         $classIsNotValidInstance = false === $class instanceof KnowledgeEntityInterface;
         if ($classIsNotValidInstance) {
-            throw new Exception('No class found with name: ' . $class . ' in language: ' . $language);
+            throw new KnowoloException('No class found with name: ' . $class . ' in language: ' . $language);
         }
 
         return $this->classInformation->getRelatedEntitiesOfLowerOrder($class);

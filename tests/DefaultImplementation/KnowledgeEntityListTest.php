@@ -5,6 +5,7 @@ namespace Tests\DefaultImplementation;
 use Knowolo\DefaultImplementation\KnowledgeEntity;
 use Knowolo\DefaultImplementation\KnowledgeEntityList;
 use Knowolo\KnowledgeEntityListInterface;
+use Knowolo\LanguageRelatedStringHandler as TitlePerLang;
 use Test\TestCase;
 
 class KnowledgeEntityListTest extends TestCase
@@ -18,8 +19,8 @@ class KnowledgeEntityListTest extends TestCase
     {
         $sut = $this->getSubjectUnderTest();
 
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $sut->addRelatedEntitiesOfHigherOrder($oak, [$tree]);
 
@@ -30,8 +31,8 @@ class KnowledgeEntityListTest extends TestCase
     {
         $sut = $this->getSubjectUnderTest();
 
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $sut->addRelatedEntitiesOfLowerOrder($tree, [$oak]);
 
@@ -42,8 +43,8 @@ class KnowledgeEntityListTest extends TestCase
     {
         $sut = $this->getSubjectUnderTest();
 
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $sut->addRelatedEntitiesOfHigherOrder($oak, [$tree]);
 
@@ -54,8 +55,8 @@ class KnowledgeEntityListTest extends TestCase
     {
         $sut = $this->getSubjectUnderTest();
 
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $sut->addRelatedEntitiesOfLowerOrder($tree, [$oak]);
 
@@ -64,8 +65,8 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testIndirectRelatedEntitiesOfHigherOrder(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
         $termInfo = $this->getSubjectUnderTest();
 
         // set narrower relations
@@ -76,8 +77,8 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testIndirectRelatedEntitiesOfLowerOrder(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
 
         $termInfo = $this->getSubjectUnderTest();
 
@@ -89,8 +90,8 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testAsListOfTitles(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
 
         $termInfo = $this->getSubjectUnderTest();
 
@@ -118,7 +119,7 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testAsListOfTitlesNonExistingLanguage(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
 
         $termInfo = $this->getSubjectUnderTest([$plant]);
 
@@ -127,8 +128,8 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testSortByTitleAscendingNoLanguageGiven(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
 
         $termInfo = $this->getSubjectUnderTest();
         $termInfo->addEntities([$tree, $plant]);
@@ -141,8 +142,8 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testSortByTitleAscendingByLanguage(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
 
         $termInfo = $this->getSubjectUnderTest();
         $termInfo->addEntities([$tree, $plant]);
@@ -158,8 +159,8 @@ class KnowledgeEntityListTest extends TestCase
 
     public function testNoSorting(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
 
         $termInfo = $this->getSubjectUnderTest();
         $termInfo->addEntities([$tree, $plant]);

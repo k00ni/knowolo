@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Knowolo\DefaultImplementation;
 
-use Knowolo\Exception;
+use Knowolo\Exception\StringNotFoundException;
 use Knowolo\KnowledgeEntityInterface;
+use Knowolo\LanguageRelatedStringHandler;
+use ValueError;
 
 use function Knowolo\isEmpty;
 
@@ -14,10 +16,7 @@ use function Knowolo\isEmpty;
  */
 class KnowledgeEntity implements KnowledgeEntityInterface
 {
-    /**
-     * @var array<string,non-empty-string>
-     */
-    private array $titlePerLanguage = [];
+    private LanguageRelatedStringHandler $titlePerLanguage;
 
     /**
      * @var non-empty-string
@@ -25,45 +24,25 @@ class KnowledgeEntity implements KnowledgeEntityInterface
     private string $id;
 
     /**
-     * @param array<string,non-empty-string> $titlePerLanguage Structure looks like: ['en' => 'name', ...]
      * @param non-empty-string $id
      *
-     * @throws \Knowolo\Exception if $id is empty
+     * @throws \ValueError
      */
-    public function __construct(array $titlePerLanguage, string $id)
+    public function __construct(LanguageRelatedStringHandler $titlePerLanguage, string $id)
     {
         if (isEmpty($id)) {
-            throw new Exception('ID can not be empty.');
+            throw new ValueError('ID can not be empty.');
         }
         $this->id = $id;
 
-        if (0 == count($titlePerLanguage)) {
-            throw new Exception('titlePerLanguage has no elements');
-        } elseif (1 == count($titlePerLanguage) && isEmpty(array_values($titlePerLanguage)[0])) {
-            throw new Exception('titlePerLanguage has one element, which is empty');
-        }
         $this->titlePerLanguage = $titlePerLanguage;
     }
 
     public function getTitle(string|null $language = null): string
     {
-        // no language given, but titles available
-        if (isEmpty($language) && 0 < count($this->titlePerLanguage)) {
-            return array_values($this->titlePerLanguage)[0];
-        } elseif (
-            false === isEmpty($language)
-            && true === isset($this->titlePerLanguage[$language])
-        ) {
-            // language given and related title is available
-            return $this->titlePerLanguage[$language];
-        } elseif (
-            false === isEmpty($language)
-            && 0 < count($this->titlePerLanguage)
-            && false === isset($this->titlePerLanguage[$language])
-        ) {
-            // language given but related title not available
-            return array_values($this->titlePerLanguage)[0];
-        } else {
+        try {
+            return $this->titlePerLanguage->getString($language);
+        } catch (StringNotFoundException) {
             return $this->getId();
         }
     }
@@ -76,7 +55,7 @@ class KnowledgeEntity implements KnowledgeEntityInterface
     public function asPhpCodeNew(): string
     {
         $titlePerLanguage = [];
-        foreach ($this->titlePerLanguage as $language => $name) {
+        foreach ($this->titlePerLanguage->getData() as $language => $name) {
             $titlePerLanguage[] = '\''.$language.'\' => \''.addslashes($name).'\'';
         }
 

@@ -6,15 +6,16 @@ use Knowolo\Config;
 use Knowolo\DefaultImplementation\KnowledgeEntity;
 use Knowolo\DefaultImplementation\KnowledgeEntityList;
 use Knowolo\DefaultImplementation\KnowledgeModule;
+use Knowolo\LanguageRelatedStringHandler as TitlePerLang;
 use Test\TestCase;
 
 class KnowledgeModuleTest extends TestCase
 {
     public function testGetSuperClasses(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $classInformation = new KnowledgeEntityList();
 
@@ -33,9 +34,9 @@ class KnowledgeModuleTest extends TestCase
 
     public function testGetSubClasses(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $classInformation = new KnowledgeEntityList();
 
@@ -54,9 +55,9 @@ class KnowledgeModuleTest extends TestCase
 
     public function testGetBroaderTerms(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $termInfo = new KnowledgeEntityList();
 
@@ -74,9 +75,9 @@ class KnowledgeModuleTest extends TestCase
 
     public function testGetNarrowerTerms(): void
     {
-        $plant = new KnowledgeEntity(['en' => 'Plant', 'de' => 'Pflanze'], 'http://id/plant');
-        $tree = new KnowledgeEntity(['en' => 'Tree', 'de' => 'Baum'], 'http://id/tree');
-        $oak = new KnowledgeEntity(['en' => 'Oak', 'de' => 'Eiche'], 'http://id/oak');
+        $plant = new KnowledgeEntity(new TitlePerLang(['en' => 'Plant', 'de' => 'Pflanze']), 'http://id/plant');
+        $tree = new KnowledgeEntity(new TitlePerLang(['en' => 'Tree', 'de' => 'Baum']), 'http://id/tree');
+        $oak = new KnowledgeEntity(new TitlePerLang(['en' => 'Oak', 'de' => 'Eiche']), 'http://id/oak');
 
         $termInfo = new KnowledgeEntityList();
 

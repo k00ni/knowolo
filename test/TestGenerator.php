@@ -6,7 +6,7 @@ namespace Test;
 
 use EasyRdf\Graph;
 use Knowolo\Config;
-use Knowolo\Exception as KnowoloException;
+use Knowolo\Exception\KnowoloException;
 use Knowolo\Generator\AbstractGenerator;
 
 /**
@@ -15,7 +15,7 @@ use Knowolo\Generator\AbstractGenerator;
 class TestGenerator extends AbstractGenerator
 {
     /**
-     * @throws \Knowolo\Exception
+     * @throws \Knowolo\Exception\KnowoloException
      */
     public function generateFileData(string $urlOrLocalPathToRdfFile, Config $config): string
     {
@@ -25,7 +25,8 @@ class TestGenerator extends AbstractGenerator
     /**
      * @return array<\Knowolo\KnowledgeEntityListInterface>
      *
-     * @throws \Knowolo\Exception
+     * @throws \ValueError
+     * @throws \Knowolo\Exception\KnowoloException
      */
     public function generateTermsAndClassInformation(Graph $graph, Config $config): array
     {
